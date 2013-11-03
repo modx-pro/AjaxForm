@@ -18,12 +18,12 @@ if ($chunk = $modx->getObject('modChunk', array('name' => $tpl))) {
 		$classes = explode(' ', $matches[1]);
 		if (!in_array($formSelector, $classes)) {
 			$classes[] = $formSelector;
-			$classes = str_replace($matches[1], implode(' ', $classes), $matches[0]);
+			$classes = str_replace('class="'.$matches[1].'"', 'class="'.implode(' ', $classes).'"', $matches[0]);
 			$content = str_replace($matches[0], $classes, $content);
 		}
 	}
 	else {
-		$content = str_replace('/<form/', '<form class="'.$formSelector.'"', $content);
+		$content = str_replace('<form', '<form class="'.$formSelector.'"', $content);
 	}
 
 	// Add action for form processing
