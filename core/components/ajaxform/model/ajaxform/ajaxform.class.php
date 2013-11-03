@@ -19,28 +19,22 @@ class AjaxForm {
 		$corePath = $this->modx->getOption('ajaxform_core_path', $config, $this->modx->getOption('core_path') . 'components/ajaxform/');
 		$assetsPath = $this->modx->getOption('ajaxform_assets_path', $config, $this->modx->getOption('assets_path') . 'components/ajaxform/');
 		$assetsUrl = $this->modx->getOption('ajaxform_assets_url', $config, $this->modx->getOption('assets_url') . 'components/ajaxform/');
-		$actionUrl = $this->modx->getOption('ajaxform_action_url', $config, $assetsUrl.'action.php');
 
 		$this->modx->lexicon->load('ajaxform:default');
 
 		$this->config = array_merge(array(
 			'assetsUrl' => $assetsUrl,
-			'cssUrl' => $assetsUrl . 'css/',
-			'jsUrl' => $assetsUrl . 'js/',
-			'actionUrl' => $actionUrl,
+			'actionUrl' => $assetsUrl.'action.php',
 
-			'formSelector' => 'form.ajax_form',
+			'formSelector' => 'ajax_form',
 			'closeMessage' => $this->modx->lexicon('af_message_close_all'),
 			'json_response' => true,
 
 			'corePath' => $corePath,
-			'modelPath' => $corePath . 'model/',
-			'jsPath' => $assetsPath . 'js/',
-			//'chunksPath' => $corePath . 'elements/chunks/',
-			//'snippetsPath' => $corePath . 'elements/snippets/',
+			'assetsPath' => $assetsPath,
 
-			'frontend_css' => '[[+cssUrl]]default.css',
-			'frontend_js' => '[[+jsUrl]]default.js',
+			'frontend_css' => '[[+assetsUrl]]css/default.css',
+			'frontend_js' => '[[+assetsUrl]]js/default.js',
 		), $config);
 	}
 
@@ -63,36 +57,37 @@ class AjaxForm {
 			case 'mgr': break;
 			default:
 				if (!defined('MODX_API_MODE') || !MODX_API_MODE) {
-					$config = $this->makePlaceholders($this->config);
 					if ($css = trim($this->config['frontend_css'])) {
-						$this->modx->regClientCSS(str_replace($config['pl'], $config['vl'], $css));
+						if (preg_match('/\.css/i', $css)) {
+							$this->modx->regClientCSS(str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $css));
+						}
 					}
 
 					$config_js = preg_replace(array('/^\n/', '/\t{6}/'), '', '
 						afConfig = {
-							jsUrl: "'.$this->config['jsUrl'].'"
-							,actionUrl: "'.$this->config['actionUrl'].'"
+							assetsUrl: "'.$this->config['assetsUrl'].'"
+							,actionUrl: "'.str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $this->config['actionUrl']).'"
 							,closeMessage: "'.$this->config['closeMessage'].'"
-							,formSelector: "'.$this->config['formSelector'].'"
+							,formSelector: "form.'.$this->config['formSelector'].'"
 						};
 					');
-					if (file_put_contents($this->config['jsPath'] . '/config.js', $config_js)) {
-						$this->modx->regClientStartupScript($this->config['jsUrl'] . 'config.js');
+					if (file_put_contents($this->config['assetsPath'] . 'js/config.js', $config_js)) {
+						$this->modx->regClientStartupScript($this->config['assetsUrl'] . 'js/config.js');
 					}
 					else {
 						$this->modx->regClientStartupScript("<script type=\"text/javascript\">\n".$config_js."\n</script>", true);
 					}
 
 					if ($js = trim($this->config['frontend_js'])) {
-						if (!empty($js) && preg_match('/\.js/i', $js)) {
+						if (preg_match('/\.js/i', $js)) {
 							$this->modx->regClientScript(preg_replace(array('/^\n/', '/\t{7}/'), '', '
 								<script type="text/javascript">
 									if(typeof jQuery == "undefined") {
-										document.write("<script src=\"'.$this->config['jsUrl'].'web/lib/jquery.min.js\" type=\"text/javascript\"><\/script>");
+										document.write("<script src=\"'.$this->config['assetsUrl'].'js/lib/jquery.min.js\" type=\"text/javascript\"><\/script>");
 									}
 								</script>
 							'), true);
-							$this->modx->regClientScript(str_replace($config['pl'], $config['vl'], $js));
+							$this->modx->regClientScript(str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $js));
 						}
 					}
 				}
@@ -185,35 +180,6 @@ class AjaxForm {
 		}
 
 		return $this->$status($message, $data);
-	}
-
-
-	/**
-	 * Transform array to placeholders
-	 *
-	 * @param array $array
-	 * @param string $prefix
-	 *
-	 * @return array
-	 */
-	public function makePlaceholders(array $array = array(), $prefix = '') {
-		$result = array(
-			'pl' => array(),
-			'vl' => array(),
-		);
-		foreach ($array as $k => $v) {
-			if (is_array($v)) {
-				$result = array_merge_recursive($result, $this->makePlaceholders($v, $k.'.'));
-			}
-			else {
-				$result['pl'][$prefix.$k] = '[[+'.$prefix.$k.']]';
-				$result['pl']['!'.$prefix.$k] = '[[!+'.$prefix.$k.']]';
-				$result['vl'][$prefix.$k] = $v;
-				$result['vl']['!'.$prefix.$k] = $v;
-			}
-		}
-
-		return $result;
 	}
 
 

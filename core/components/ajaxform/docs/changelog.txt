@@ -3,6 +3,7 @@ Changelog for AjaxForm.
 1.0.0-beta1
 ==============
 - Improved adding class "ajax_form" to form.
+- Improved snippet parameters.
 
 1.0.0-beta0
 ==============

@@ -11,6 +11,18 @@ $tmp = array(
 		'type' => 'textfield',
 		'value' => 'FormIt',
 	),
+	'frontend_css' => array(
+		'type' => 'textfield',
+		'value' => '[[+assetsUrl]]css/default.css',
+	),
+	'frontend_js' => array(
+		'type' => 'textfield',
+		'value' => '[[+assetsUrl]]js/default.js',
+	),
+	'actionUrl' => array(
+		'type' => 'textfield',
+		'value' => '[[+assetsUrl]]action.php',
+	),
 );
 
 foreach ($tmp as $k => $v) {
