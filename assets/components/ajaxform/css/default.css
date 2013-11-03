@@ -1,0 +1,22 @@
+@import url('./lib/jquery.jgrowl.min.css');
+
+.af-message-success {background-color: green !important;}
+.af-message-error {background-color: brown !important;}
+.af-message-info {background-color: black !important;}
+
+.ajax_form.af_example {
+	width: 500px;
+}
+.ajax_form.af_example .controls input,
+.ajax_form.af_example .controls textarea {
+	width: 100%;
+}
+.ajax_form.af_example .controls [type="submit"] {
+	float: right;
+}
+.ajax_form.af_example .control-group {
+	clear: both;
+}
+.ajax_form .error {
+	color: brown;
+}

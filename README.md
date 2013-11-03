@@ -13,10 +13,10 @@ Simple component for MODX Revolution, that allows you to send any form through a
 You can specify any parameters for end snippet:
 ```
 [[!AjaxForm?
-    &form=`myForm`
-    &snippet=`FormIt`
-    &hooks=`email`
-    &emailto=`info@mysite.com`
-    &etc=`...`
+	&form=`myForm`
+	&snippet=`FormIt`
+	&hooks=`email`
+	&emailTo=`info@mysite.com`
+	&etc=`...`
 ]]
 ```
