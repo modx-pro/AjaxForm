@@ -26,6 +26,14 @@ if ($chunk = $modx->getObject('modChunk', array('name' => $tpl))) {
 		$content = str_replace('<form', '<form class="'.$formSelector.'"', $content);
 	}
 
+	// Add method = post
+	if (preg_match('/form.*?method="(.*?)"/', $content)) {
+		$content = preg_replace('/form(.*?)method="(.*?)"/', 'form\\1method="post"', $content);
+	}
+	else {
+		$content = str_replace('<form', '<form method="post"', $content);
+	}
+
 	// Add action for form processing
 	$hash = md5(implode($scriptProperties));
 	$action = '<input type="hidden" name="action" value="'.$hash.'" />';
