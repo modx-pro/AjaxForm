@@ -3,24 +3,24 @@
 	<div class="control-group">
 		<label class="control-label" for="af_name">[[%af_label_name]]</label>
 		<div class="controls">
-			<input type="text" id="af_name" name="name" value="" placeholder="" class="span4" />
-			<span class="error error_name"></span>
+			<input type="text" id="af_name" name="name" value="[[+fi.name]]" placeholder="" class="span4" />
+			<span class="error error_name">[[+fi.error.name]]</span>
 		</div>
 	</div>
 
 	<div class="control-group">
 		<label class="control-label" for="af_email">[[%af_label_email]]</label>
 		<div class="controls">
-			<input type="email" id="af_email" name="email" value="" placeholder="" class="span4" />
-			<span class="error error_email"></span>
+			<input type="email" id="af_email" name="email" value="[[+fi.email]]" placeholder="" class="span4" />
+			<span class="error error_email">[[+fi.error.email]]</span>
 		</div>
 	</div>
 
 	<div class="control-group">
 		<label class="control-label" for="af_message">[[%af_label_message]]</label>
 		<div class="controls">
-			<textarea id="af_message" name="message" class="span4" rows="5"></textarea>
-			<span class="error error_message"></span>
+			<textarea id="af_message" name="message" class="span4" rows="5">[[+fi.message]]</textarea>
+			<span class="error error_message">[[+fi.error.message]]</span>
 		</div>
 	</div>
 
@@ -30,5 +30,11 @@
 			<button type="submit" class="btn btn-primary">[[%af_submit]]</button>
 		</div>
 	</div>
-
+	
+	[[+fi.success:is=`1`:then=`
+		<div class="alert alert-success">[[+fi.successMessage]]</div>
+	`]]
+	[[+fi.validation_error:is=`1`:then=`
+		<div class="alert alert-danger">[[+fi.validation_error_message]]</div>
+	`]]
 </form>

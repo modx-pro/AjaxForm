@@ -110,7 +110,7 @@ class AjaxForm {
 		if (!isset($_SESSION['AjaxForm'][$action])) {
 			return $this->error('af_err_action_nf');
 		}
-		unset($fields['action'], $_POST['action']);
+		unset($fields['af_action'], $_POST['af_action']);
 
 		$scriptProperties = $_SESSION['AjaxForm'][$action];
 		$scriptProperties['fields'] = $fields;

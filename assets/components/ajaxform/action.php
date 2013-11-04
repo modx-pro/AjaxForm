@@ -13,9 +13,9 @@ $AjaxForm = $modx->getService('ajaxform','AjaxForm',$modx->getOption('ajaxform_c
 if ($_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest') {
 	$modx->sendRedirect($modx->makeUrl($modx->getOption('site_start'),'','','full'));
 }
-elseif (empty($_REQUEST['action'])) {
+elseif (empty($_REQUEST['af_action'])) {
 	echo $AjaxForm->error('af_err_action_ns');
 }
 else {
-	echo $AjaxForm->process($_REQUEST['action'], $_REQUEST);
+	echo $AjaxForm->process($_REQUEST['af_action'], $_REQUEST);
 }
