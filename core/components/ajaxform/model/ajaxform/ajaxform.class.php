@@ -156,9 +156,6 @@ class AjaxForm {
 		$plPrefix = isset($scriptProperties['placeholderPrefix'])
 			? $scriptProperties['placeholderPrefix']
 			: 'fi.';
-		$status = empty($this->modx->placeholders[$plPrefix.'success'])
-			? 'error'
-			: 'success';
 
 		$errors = array();
 		foreach ($scriptProperties['fields'] as $k => $v) {
@@ -171,11 +168,13 @@ class AjaxForm {
 			$message = !empty($this->modx->placeholders[$plPrefix.'validation_error_message'])
 				? $this->modx->placeholders[$plPrefix.'validation_error_message']
 				: 'af_err_has_errors';
+			$status = 'error';
 		}
 		else {
 			$message = isset($this->modx->placeholders[$plPrefix.'successMessage'])
 				? $this->modx->placeholders[$plPrefix.'successMessage']
 				: 'af_success_submit';
+			$status = 'success';
 		}
 
 		return $this->$status($message, $errors);
