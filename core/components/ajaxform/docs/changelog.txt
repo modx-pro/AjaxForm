@@ -1,5 +1,9 @@
 Changelog for AjaxForm.
 
+1.0.0-pl
+==============
+- Call end snippet on page load for preparation of form. Now you can use hook "math".
+
 1.0.0-rc
 ==============
 - Force attribute "method=post" to form.

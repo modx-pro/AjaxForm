@@ -160,26 +160,25 @@ class AjaxForm {
 			? 'error'
 			: 'success';
 
-		if (!empty($this->modx->placeholders[$plPrefix.'validation_error_message'])) {
-			$message = $this->modx->placeholders[$plPrefix.'validation_error_message'];
-		}
-		else {
-			if (isset($this->modx->placeholders[$plPrefix.'successMessage'])) {
-				$message = $this->modx->placeholders[$plPrefix.'successMessage'];
-			}
-			else {
-				$message = 'af_err_success_submit';
-			}
-		}
-
-		$data = array();
+		$errors = array();
 		foreach ($scriptProperties['fields'] as $k => $v) {
 			if (isset($this->modx->placeholders[$plPrefix.'error.'.$k])) {
-				$data[$k] = $this->modx->placeholders[$plPrefix.'error.'.$k];
+				$errors[$k] = $this->modx->placeholders[$plPrefix.'error.'.$k];
 			}
 		}
 
-		return $this->$status($message, $data);
+		if (!empty($errors)) {
+			$message = !empty($this->modx->placeholders[$plPrefix.'validation_error_message'])
+				? $this->modx->placeholders[$plPrefix.'validation_error_message']
+				: 'af_err_has_errors';
+		}
+		else {
+			$message = isset($this->modx->placeholders[$plPrefix.'successMessage'])
+				? $this->modx->placeholders[$plPrefix.'successMessage']
+				: 'af_success_submit';
+		}
+
+		return $this->$status($message, $errors);
 	}
 
 
