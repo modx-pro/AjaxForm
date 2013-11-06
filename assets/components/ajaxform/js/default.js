@@ -47,6 +47,7 @@ var AjaxForm = {
 
 		$(document).on('reset', afConfig.formSelector, function(e) {
 			$(this).find('.error').html('');
+			AjaxForm.Message.close();
 		});
 	}
 
