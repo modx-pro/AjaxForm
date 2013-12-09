@@ -19,3 +19,5 @@ elseif (empty($_REQUEST['af_action'])) {
 else {
 	echo $AjaxForm->process($_REQUEST['af_action'], $_REQUEST);
 }
+
+@session_write_close();

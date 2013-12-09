@@ -1,5 +1,9 @@
 Changelog for AjaxForm.
 
+1.0.1-pl
+==============
+- Possibly fix for Error 500 on some hosts.
+
 1.0.0-pl
 ==============
 - Call end snippet on page load for preparation of form. Now you can use hook "math".
