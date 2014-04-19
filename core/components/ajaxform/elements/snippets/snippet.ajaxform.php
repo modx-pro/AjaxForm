@@ -10,6 +10,20 @@ $tpl = $modx->getOption('form', $scriptProperties, 'tpl.AjaxForm.example', true)
 $formSelector = $modx->getOption('formSelector', $scriptProperties, 'ajax_form', true);
 if (!isset($placeholderPrefix)) {$placeholderPrefix = 'fi.';}
 
+/*placeholder set*/
+$af_ph_pref = $modx->getOption('af_ph_pref', $scriptProperties, 'af.', true);
+if (isset($af_phs)) {
+    $arr_ph=explode(',',$af_phs);
+    $ph_pair=array();
+    foreach($arr_ph as $val_ph){
+        $val_ph=trim($val_ph);
+        if(isset($$val_ph)){
+            $ph_pair[$val_ph]=$$val_ph;
+        }
+    }
+    $modx->setPlaceholders($ph_pair,$af_ph_pref);
+}
+
 /** @var modChunk $chunk */
 if (!$chunk = $modx->getObject('modChunk', array('name' => $tpl))) {
 	return $modx->lexicon('af_err_chunk_nf', array('name' => $tpl));
