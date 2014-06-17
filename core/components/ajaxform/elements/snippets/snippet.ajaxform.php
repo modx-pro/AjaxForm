@@ -6,16 +6,17 @@ if (!($AjaxForm instanceof AjaxForm)) return '';
 $AjaxForm->initialize($modx->context->key);
 
 $snippet = $modx->getOption('snippet', $scriptProperties, 'FormIt', true);
-$tpl = $modx->getOption('form', $scriptProperties, 'tpl.AjaxForm.example', true);
 $formSelector = $modx->getOption('formSelector', $scriptProperties, 'ajax_form', true);
 if (!isset($placeholderPrefix)) {$placeholderPrefix = 'fi.';}
 
-/** @var modChunk $chunk */
-if (!$chunk = $modx->getObject('modChunk', array('name' => $tpl))) {
-	return $modx->lexicon('af_err_chunk_nf', array('name' => $tpl));
+if (empty($content)) {
+	$tpl = $modx->getOption('form', $scriptProperties, 'tpl.AjaxForm.example', true);
+	/** @var modChunk $chunk */
+	if (!$chunk = $modx->getObject('modChunk', array('name' => $tpl))) {
+		return $modx->lexicon('af_err_chunk_nf', array('name' => $tpl));
+	}
+	$content = $chunk->getContent();
 }
-
-$content = $chunk->getContent();
 
 // Add selector to tag form
 if (preg_match('/form.*?class="(.*?)"/', $content, $matches)) {
