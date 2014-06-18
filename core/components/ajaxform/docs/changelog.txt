@@ -3,6 +3,7 @@ Changelog for AjaxForm.
 1.0.2-pl
 ==============
 - [#4] Ability to use @INLINE chunk in parameter &form, if you have pdoTools installed.
+- [#3] Ability to set placeholders in form by specifying them into script parameters.
 
 1.0.1-pl
 ==============

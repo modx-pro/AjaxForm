@@ -12,10 +12,10 @@ if (!isset($placeholderPrefix)) {$placeholderPrefix = 'fi.';}
 
 /** @var pdoTools $pdo */
 if ($pdo = $modx->getService('pdoTools')) {
-	$content = $pdo->getChunk($tpl);
+	$content = $pdo->getChunk($tpl, $scriptProperties);
 }
 /** @var modChunk $chunk */
-elseif (!$content = $modx->getChunk($tpl)) {
+elseif (!$content = $modx->getChunk($tpl, $scriptProperties)) {
 	return $modx->lexicon('af_err_chunk_nf', array('name' => $tpl));
 }
 
