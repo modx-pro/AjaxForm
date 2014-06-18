@@ -23,6 +23,7 @@ var AjaxForm = {
 				}
 				,success: function(response, status, xhr, form) {
 					form.find('input,textarea,select,button').attr('disabled', false);
+					$(document).trigger("af_complete", response);
 					if (!response.success) {
 						AjaxForm.Message.error(response.message);
 						if (response.data) {

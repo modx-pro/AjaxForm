@@ -2,6 +2,7 @@ Changelog for AjaxForm.
 
 1.0.2-pl
 ==============
+- Added jQuery event "af_complete" on form submit.
 - [#4] Ability to use @INLINE chunk in parameter &form, if you have pdoTools installed.
 - [#3] Ability to set placeholders in form by specifying them into script parameters.
 - [#2] Script will add class "error" to elements with ".error_[name_of_field]" elements in form.
