@@ -30,13 +30,14 @@ var AjaxForm = {
 							for (key in response.data) {
 								if (response.data.hasOwnProperty(key)) {
 									value = response.data[key];
-									form.find('.error_' + key).html(value);
+									form.find('.error_' + key).html(value).addClass('error');
 								}
 							}
 						}
 					}
 					else {
 						AjaxForm.Message.success(response.message);
+						form.find('.error').removeClass('error');
 						form[0].reset();
 					}
 				}
