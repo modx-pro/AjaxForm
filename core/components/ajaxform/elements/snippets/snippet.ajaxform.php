@@ -10,12 +10,14 @@ $tpl = $modx->getOption('form', $scriptProperties, 'tpl.AjaxForm.example', true)
 $formSelector = $modx->getOption('formSelector', $scriptProperties, 'ajax_form', true);
 if (!isset($placeholderPrefix)) {$placeholderPrefix = 'fi.';}
 
+/** @var pdoTools $pdo */
+if ($pdo = $modx->getService('pdoTools')) {
+	$content = $pdo->getChunk($tpl);
+}
 /** @var modChunk $chunk */
-if (!$chunk = $modx->getObject('modChunk', array('name' => $tpl))) {
+elseif (!$content = $modx->getChunk($tpl)) {
 	return $modx->lexicon('af_err_chunk_nf', array('name' => $tpl));
 }
-
-$content = $chunk->getContent();
 
 // Add selector to tag form
 if (preg_match('/form.*?class="(.*?)"/', $content, $matches)) {
