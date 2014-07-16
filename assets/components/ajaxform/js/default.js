@@ -33,6 +33,7 @@ var AjaxForm = {
 								if (response.data.hasOwnProperty(key)) {
 									value = response.data[key];
 									form.find('.error_' + key).html(value).addClass('error');
+									form.find('[name="' + key + '"]').addClass('error');
 								}
 							}
 						}
