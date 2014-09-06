@@ -19,7 +19,7 @@ elseif (!$content = $modx->getChunk($tpl, $scriptProperties)) {
 	return $modx->lexicon('af_err_chunk_nf', array('name' => $tpl));
 }
 
-if(preg_match('/\<form.*?\>/', $content, $fmatches)){
+if(preg_match('/\<form(.*?)\>/', $content, $fmatches)){
 	// Add selector to tag form
 	if (preg_match('/form.*?class="(.*?)"/', $content, $fmatches[0])) {
 		$classes = explode(' ', $matches[1]);
