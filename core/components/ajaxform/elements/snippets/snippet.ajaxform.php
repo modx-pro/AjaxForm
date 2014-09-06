@@ -19,25 +19,26 @@ elseif (!$content = $modx->getChunk($tpl, $scriptProperties)) {
 	return $modx->lexicon('af_err_chunk_nf', array('name' => $tpl));
 }
 
-// Add selector to tag form
-if (preg_match('/form.*?class="(.*?)"/', $content, $matches)) {
-	$classes = explode(' ', $matches[1]);
-	if (!in_array($formSelector, $classes)) {
-		$classes[] = $formSelector;
-		$classes = str_replace('class="'.$matches[1].'"', 'class="'.implode(' ', $classes).'"', $matches[0]);
-		$content = str_replace($matches[0], $classes, $content);
+if(preg_match('/\<form.*?\>/', $content, $fmatches)){
+	// Add selector to tag form
+	if (preg_match('/form.*?class="(.*?)"/', $content, $fmatches[0])) {
+		$classes = explode(' ', $matches[1]);
+		if (!in_array($formSelector, $classes)) {
+			$classes[] = $formSelector;
+			$classes = str_replace('class="'.$matches[1].'"', 'class="'.implode(' ', $classes).'"', $matches[0]);
+			$content = str_replace($matches[0], $classes, $content);
+		}
 	}
-}
-else {
-	$content = str_replace('<form', '<form class="'.$formSelector.'"', $content);
-}
-
-// Add method = post
-if (preg_match('/form.*?method="(.*?)"/', $content)) {
-	$content = preg_replace('/form(.*?)method="(.*?)"/', 'form\\1method="post"', $content);
-}
-else {
-	$content = str_replace('<form', '<form method="post"', $content);
+	else {
+		$content = str_replace('<form', '<form class="'.$formSelector.'"', $content);
+	}
+	// Add method = post
+	if (preg_match('/form.*?method="(.*?)"/', $fmatches[0])) {
+		$content = preg_replace('/form(.*?)method="(.*?)"/', 'form\\1method="post"', $content);
+	}
+	else {
+		$content = str_replace('<form', '<form method="post"', $content);
+	}
 }
 
 // Add action for form processing
