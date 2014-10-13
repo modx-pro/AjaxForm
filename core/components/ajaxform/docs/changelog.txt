@@ -1,5 +1,9 @@
 Changelog for AjaxForm.
 
+1.1.0-pl
+==============
+- [#8] Improved regular expression.
+
 1.0.2-pl
 ==============
 - Added jQuery event "af_complete" on form submit.

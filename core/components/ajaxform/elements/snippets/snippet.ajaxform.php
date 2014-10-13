@@ -20,7 +20,7 @@ elseif (!$content = $modx->getChunk($tpl, $scriptProperties)) {
 }
 
 // Add selector to tag form
-if (preg_match('/form.*?class="(.*?)"/', $content, $matches)) {
+if (preg_match('/<form.*?class="(.*?)"/', $content, $matches)) {
 	$classes = explode(' ', $matches[1]);
 	if (!in_array($formSelector, $classes)) {
 		$classes[] = $formSelector;
@@ -33,8 +33,8 @@ else {
 }
 
 // Add method = post
-if (preg_match('/form.*?method="(.*?)"/', $content)) {
-	$content = preg_replace('/form(.*?)method="(.*?)"/', 'form\\1method="post"', $content);
+if (preg_match('/<form.*?method="(.*?)"/', $content)) {
+	$content = preg_replace('/<form(.*?)method="(.*?)"/', '<form\\1method="post"', $content);
 }
 else {
 	$content = str_replace('<form', '<form method="post"', $content);
