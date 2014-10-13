@@ -1,6 +1,6 @@
 Changelog for AjaxForm.
 
-1.1.0-pl
+1.0.3-pl
 ==============
 - [#8] Improved regular expression.
 - Improved compatibility with parameter "submitVar" in snippet FormIt.
