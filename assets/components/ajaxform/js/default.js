@@ -16,6 +16,17 @@ var AjaxForm = {
 			$(this).ajaxSubmit({
 				dataType: 'json'
 				,url: afConfig.actionUrl
+				,beforeSerialize: function(form, options) { 
+				    form.find(':submit').each(function() {
+		                        if(!form.find('input[type="hidden"][name = "' + $(this).attr('name') + '"]').length) {
+		                            $(form).append(
+		                                $("<input type='hidden'>").attr( { 
+		                                    name: $(this).attr('name'), 
+		                                    value: $(this).attr('value') })
+		                            );
+		                        }
+		                    })           
+		                }
 				,beforeSubmit: function(fields, form) {
 					form.find('.error').html('');
 					form.find('input,textarea,select,button').attr('disabled', true);
