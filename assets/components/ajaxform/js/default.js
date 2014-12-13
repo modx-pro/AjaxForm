@@ -29,6 +29,9 @@ var AjaxForm = {
 					})
 				}
 				,beforeSubmit: function(fields, form) {
+					if (typeof(afValidated) != 'undefined' && afValidated == false) {
+						return false;
+					}
 					form.find('.error').html('');
 					form.find('input,textarea,select,button').attr('disabled', true);
 					return true;
@@ -36,7 +39,7 @@ var AjaxForm = {
 				,success: function(response, status, xhr, form) {
 					form.find('input,textarea,select,button').attr('disabled', false);
 					response.form=form;
-					$(document).trigger("af_complete", response);
+					$(document).trigger('af_complete', response);
 					if (!response.success) {
 						AjaxForm.Message.error(response.message);
 						if (response.data) {
