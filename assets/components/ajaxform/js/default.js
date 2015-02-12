@@ -33,6 +33,7 @@ var AjaxForm = {
 						return false;
 					}
 					form.find('.error').html('');
+					form.find('.error').removeClass('error');
 					form.find('input,textarea,select,button').attr('disabled', true);
 					return true;
 				}
