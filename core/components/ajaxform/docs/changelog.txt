@@ -1,5 +1,9 @@
 Changelog for AjaxForm.
 
+1.0.5-pl
+==============
+- Remove error class from fields on before form submit.
+
 1.0.4-pl
 ==============
 - Added checking of global js var "afValidated" before form submit.
