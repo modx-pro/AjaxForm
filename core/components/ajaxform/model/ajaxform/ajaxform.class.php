@@ -63,30 +63,18 @@ class AjaxForm {
 						}
 					}
 
-					$config_js = preg_replace(array('/^\n/', '/\t{6}/'), '', '
-						afConfig = {
-							assetsUrl: "'.$this->config['assetsUrl'].'"
-							,actionUrl: "'.str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $this->config['actionUrl']).'"
-							,closeMessage: "'.$this->config['closeMessage'].'"
-							,formSelector: "form.'.$this->config['formSelector'].'"
-						};
-					');
-					if (file_put_contents($this->config['assetsPath'] . 'js/config.js', $config_js)) {
-						$this->modx->regClientStartupScript($this->config['assetsUrl'] . 'js/config.js');
-					}
-					else {
-						$this->modx->regClientStartupScript("<script type=\"text/javascript\">\n".$config_js."\n</script>", true);
-					}
-
+					$config_js = array(
+						'assetsUrl' => $this->config['assetsUrl'],
+						'actionUrl' => str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $this->config['actionUrl']),
+						'closeMessage' => $this->config['closeMessage'],
+						'formSelector' => "form.{$this->config['formSelector']}",
+						'pageId' => !empty($this->modx->resource)
+							? $this->modx->resource->get('id')
+							: 0
+					);
+					$this->modx->regClientStartupScript('<script type="text/javascript">afConfig = '.$this->modx->toJSON($config_js).';</script>', true);
 					if ($js = trim($this->config['frontend_js'])) {
-						if (preg_match('/\.js/i', $js)) {
-							$this->modx->regClientScript(preg_replace(array('/^\n/', '/\t{7}/'), '', '
-								<script type="text/javascript">
-									if(typeof jQuery == "undefined") {
-										document.write("<script src=\"'.$this->config['assetsUrl'].'js/lib/jquery.min.js\" type=\"text/javascript\"><\/script>");
-									}
-								</script>
-							'), true);
+						if (preg_match('/\.js$/i', $js)) {
 							$this->modx->regClientScript(str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $js));
 						}
 					}

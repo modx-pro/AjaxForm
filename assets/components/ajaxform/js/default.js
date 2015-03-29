@@ -15,12 +15,13 @@ var AjaxForm = {
 		$(document).on('submit', afConfig.formSelector, function(e) {
 			$(this).ajaxSubmit({
 				dataType: 'json'
+				,data: {pageId: afConfig.pageId}
 				,url: afConfig.actionUrl
 				,beforeSerialize: function(form, options) {
 					form.find(':submit').each(function() {
-						if (!form.find('input[type="hidden"][name = "' + $(this).attr('name') + '"]').length) {
+						if (!form.find('input[type="hidden"][name="' + $(this).attr('name') + '"]').length) {
 							$(form).append(
-								$("<input type='hidden'>").attr({
+								$('<input type="hidden">').attr({
 									name: $(this).attr('name'),
 									value: $(this).attr('value')
 								})
@@ -72,8 +73,6 @@ var AjaxForm = {
 	}
 
 };
-
-
 
 
 AjaxForm.Message = {

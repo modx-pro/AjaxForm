@@ -1,5 +1,9 @@
 Changelog for AjaxForm.
 
+1.0.6-pl
+==============
+- [#15] Fixed work in different contexts.
+
 1.0.5-pl
 ==============
 - Remove error class from fields on before form submit.
