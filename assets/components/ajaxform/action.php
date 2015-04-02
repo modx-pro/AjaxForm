@@ -13,6 +13,7 @@ if (!empty($_REQUEST['pageId'])) {
 		if ($resource->get('context_key') != 'web') {
 			$modx->switchContext($resource->get('context_key'));
 		}
+		$modx->resource = $resource;
 	}
 }
 

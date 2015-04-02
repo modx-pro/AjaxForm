@@ -1,5 +1,9 @@
 Changelog for AjaxForm.
 
+1.0.7-pl
+==============
+- Added loading source resource to modX::resource in action.php.
+
 1.0.6-pl
 ==============
 - [#15] Fixed work in different contexts.
