@@ -1,6 +1,6 @@
 var AjaxForm = {
 
-	initialize: function() {
+	initialize: function(afConfig) {
 		if(!jQuery().ajaxForm) {
 			document.write('<script src="'+afConfig.assetsUrl+'js/lib/jquery.form.min.js"><\/script>');
 		}
@@ -98,6 +98,3 @@ AjaxForm.Message = {
 		$.jGrowl('close');
 	}
 };
-
-
-AjaxForm.initialize();

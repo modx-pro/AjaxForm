@@ -42,47 +42,45 @@ class AjaxForm {
 	/**
 	 * Initializes AjaxForm into different contexts.
 	 *
+	 * @deprecated
 	 * @param string $ctx The context to load. Defaults to web.
 	 * @param array $scriptProperties array with additional parameters
 	 *
 	 * @return boolean
 	 */
 	public function initialize($ctx = 'web', $scriptProperties = array()) {
-		$this->config = array_merge($this->config, $scriptProperties);
-		$this->config['ctx'] = $ctx;
-		if (!empty($this->initialized[$ctx])) {
-			return true;
-		}
-		switch ($ctx) {
-			case 'mgr': break;
-			default:
-				if (!defined('MODX_API_MODE') || !MODX_API_MODE) {
-					if ($css = trim($this->config['frontend_css'])) {
-						if (preg_match('/\.css/i', $css)) {
-							$this->modx->regClientCSS(str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $css));
-						}
-					}
-
-					$config_js = array(
-						'assetsUrl' => $this->config['assetsUrl'],
-						'actionUrl' => str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $this->config['actionUrl']),
-						'closeMessage' => $this->config['closeMessage'],
-						'formSelector' => "form.{$this->config['formSelector']}",
-						'pageId' => !empty($this->modx->resource)
-							? $this->modx->resource->get('id')
-							: 0
-					);
-					$this->modx->regClientStartupScript('<script type="text/javascript">afConfig = '.$this->modx->toJSON($config_js).';</script>', true);
-					if ($js = trim($this->config['frontend_js'])) {
-						if (preg_match('/\.js$/i', $js)) {
-							$this->modx->regClientScript(str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $js));
-						}
-					}
-				}
-				$this->initialized[$ctx] = true;
-				break;
-		}
+		$this->loadJsCss();
 		return true;
+	}
+
+
+	/**
+	 * Independent registration of css and js
+	 *
+	 * @param string $objectName Name of object to initialize in javascript
+	 */
+	public function loadJsCss($objectName = 'AjaxForm') {
+		if ($css = trim($this->config['frontend_css'])) {
+			if (preg_match('/\.css/i', $css)) {
+				$this->modx->regClientCSS(str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $css));
+			}
+		}
+		if ($js = trim($this->config['frontend_js'])) {
+			if (preg_match('/\.js$/i', $js)) {
+				$this->modx->regClientScript(str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $js));
+			}
+		}
+
+		$config = $this->modx->toJSON(array(
+			'assetsUrl' => $this->config['assetsUrl'],
+			'actionUrl' => str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $this->config['actionUrl']),
+			'closeMessage' => $this->config['closeMessage'],
+			'formSelector' => "form.{$this->config['formSelector']}",
+			'pageId' => !empty($this->modx->resource)
+				? $this->modx->resource->get('id')
+				: 0
+		));
+		$this->modx->regClientScript('<script type="text/javascript">' . trim($objectName) . '.initialize(' . $config . ');</script>', true);
 	}
 
 

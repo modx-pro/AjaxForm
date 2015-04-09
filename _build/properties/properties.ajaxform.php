@@ -23,6 +23,14 @@ $tmp = array(
 		'type' => 'textfield',
 		'value' => '[[+assetsUrl]]action.php',
 	),
+	'formSelector' => array(
+		'type' => 'textfield',
+		'value' => 'ajax_form',
+	),
+	'objectName' => array(
+		'type' => 'textfield',
+		'value' => 'AjaxForm',
+	),
 );
 
 foreach ($tmp as $k => $v) {

@@ -1,5 +1,11 @@
 Changelog for AjaxForm.
 
+1.1.0-pl
+==============
+- Improved registration of frontend javascript.
+- Added parameter &formSelector for specifying name of CSS class of form.
+- Added parameter &objectName for specifying name of javascript object to initialize.
+
 1.0.7-pl
 ==============
 - Added loading source resource to modX::resource in action.php.

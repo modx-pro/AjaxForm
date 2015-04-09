@@ -26,7 +26,7 @@
 
 	<div class="control-group">
 		<div class="controls">
-			<button type="reset" class="btn">[[%af_reset]]</button>
+			<button type="reset" class="btn btn-default">[[%af_reset]]</button>
 			<button type="submit" class="btn btn-primary">[[%af_submit]]</button>
 		</div>
 	</div>

@@ -1,14 +1,14 @@
 <?php
 /** @var array $scriptProperties */
 /** @var AjaxForm $AjaxForm */
-$AjaxForm = $modx->getService('ajaxform','AjaxForm',$modx->getOption('ajaxform_core_path',null,$modx->getOption('core_path').'components/ajaxform/').'model/ajaxform/',$scriptProperties);
-if (!($AjaxForm instanceof AjaxForm)) return '';
-$AjaxForm->initialize($modx->context->key);
+if (!$modx->loadClass('ajaxform', MODX_CORE_PATH . 'components/ajaxform/model/ajaxform/', false, true)) {return false;}
+$AjaxForm = new AjaxForm($modx, $scriptProperties);
 
 $snippet = $modx->getOption('snippet', $scriptProperties, 'FormIt', true);
 $tpl = $modx->getOption('form', $scriptProperties, 'tpl.AjaxForm.example', true);
 $formSelector = $modx->getOption('formSelector', $scriptProperties, 'ajax_form', true);
-if (!isset($placeholderPrefix)) {$placeholderPrefix = 'fi.';}
+$objectName = $modx->getOption('objectName', $scriptProperties, 'AjaxForm', true);
+$AjaxForm->loadJsCss($objectName);
 
 /** @var pdoTools $pdo */
 if ($pdo = $modx->getService('pdoTools')) {
@@ -24,12 +24,12 @@ if (preg_match('/<form.*?class="(.*?)"/', $content, $matches)) {
 	$classes = explode(' ', $matches[1]);
 	if (!in_array($formSelector, $classes)) {
 		$classes[] = $formSelector;
-		$classes = str_replace('class="'.$matches[1].'"', 'class="'.implode(' ', $classes).'"', $matches[0]);
+		$classes = str_replace('class="' . $matches[1] . '"', 'class="' . implode(' ', $classes) . '"', $matches[0]);
 		$content = str_replace($matches[0], $classes, $content);
 	}
 }
 else {
-	$content = str_replace('<form', '<form class="'.$formSelector.'"', $content);
+	$content = str_replace('<form', '<form class="' . $formSelector . '"', $content);
 }
 
 // Add method = post
@@ -42,7 +42,7 @@ else {
 
 // Add action for form processing
 $hash = md5(http_build_query($scriptProperties));
-$action = '<input type="hidden" name="af_action" value="'.$hash.'" />';
+$action = '<input type="hidden" name="af_action" value="' . $hash . '" />';
 if ((strpos($content, '</form>') !== false)) {
 	if (preg_match('/<input.*?name="af_action".*?>/', $content, $matches)) {
 		$content = str_replace($matches[0], '', $content);
