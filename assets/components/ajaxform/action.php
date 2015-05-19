@@ -7,13 +7,16 @@ $modx->getService('error','error.modError');
 $modx->setLogLevel(modX::LOG_LEVEL_ERROR);
 $modx->setLogTarget('FILE');
 
-// Switch context if need
 if (!empty($_REQUEST['pageId'])) {
 	if ($resource = $modx->getObject('modResource', $_REQUEST['pageId'])) {
+		// Set resource if needed.
+		if (empty($modx->resource) || $modx->resource->get('id') != $_REQUEST['pageId']) {
+			$modx->resource = $resource;
+		}
+		// Switch context if needed.
 		if ($resource->get('context_key') != 'web') {
 			$modx->switchContext($resource->get('context_key'));
 		}
-		$modx->resource = $resource;
 	}
 }
 
