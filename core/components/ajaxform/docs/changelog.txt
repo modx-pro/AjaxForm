@@ -1,5 +1,9 @@
 Changelog for AjaxForm.
 
+1.1.1-pl
+==============
+- Improved checking of availability of pdoTools.
+
 1.1.0-pl
 ==============
 - Improved registration of frontend javascript.

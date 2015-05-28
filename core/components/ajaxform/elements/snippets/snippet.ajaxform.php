@@ -11,7 +11,7 @@ $objectName = $modx->getOption('objectName', $scriptProperties, 'AjaxForm', true
 $AjaxForm->loadJsCss($objectName);
 
 /** @var pdoTools $pdo */
-if ($pdo = $modx->getService('pdoTools')) {
+if (class_exists('pdoTools') && $pdo = $modx->getService('pdoTools')) {
 	$content = $pdo->getChunk($tpl, $scriptProperties);
 }
 /** @var modChunk $chunk */
