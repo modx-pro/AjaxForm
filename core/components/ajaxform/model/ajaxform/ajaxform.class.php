@@ -150,6 +150,14 @@ class AjaxForm {
 			}
 		}
 
+		if(!empty($this->modx->placeholders[$plPrefix.'error.recaptcha'])) {
+			$errors['recaptcha'] = $this->modx->placeholders[$plPrefix.'error.recaptcha'];
+		}
+
+		if(!empty($this->modx->placeholders[$plPrefix.'error.recaptchav2_error'])) {
+			$errors['recaptcha'] = $this->modx->placeholders[$plPrefix.'error.recaptchav2_error'];
+		}
+		
 		if (!empty($errors)) {
 			$message = !empty($this->modx->placeholders[$plPrefix.'validation_error_message'])
 				? $this->modx->placeholders[$plPrefix.'validation_error_message']
