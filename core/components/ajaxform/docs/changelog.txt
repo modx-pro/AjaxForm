@@ -2,6 +2,7 @@ Changelog for AjaxForm.
 
 1.1.2-pl
 ==============
+- Compatibility with FormIt ReCaptcha.
 - Small code format.
 
 1.1.1-pl
