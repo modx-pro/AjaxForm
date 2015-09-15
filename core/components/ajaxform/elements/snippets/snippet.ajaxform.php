@@ -1,7 +1,9 @@
 <?php
 /** @var array $scriptProperties */
 /** @var AjaxForm $AjaxForm */
-if (!$modx->loadClass('ajaxform', MODX_CORE_PATH . 'components/ajaxform/model/ajaxform/', false, true)) {return false;}
+if (!$modx->loadClass('ajaxform', MODX_CORE_PATH . 'components/ajaxform/model/ajaxform/', false, true)) {
+	return false;
+}
 $AjaxForm = new AjaxForm($modx, $scriptProperties);
 
 $snippet = $modx->getOption('snippet', $scriptProperties, 'FormIt', true);
@@ -14,8 +16,10 @@ $AjaxForm->loadJsCss($objectName);
 if (class_exists('pdoTools') && $pdo = $modx->getService('pdoTools')) {
 	$content = $pdo->getChunk($tpl, $scriptProperties);
 }
-/** @var modChunk $chunk */
-elseif (!$content = $modx->getChunk($tpl, $scriptProperties)) {
+else {
+	$content = $modx->getChunk($tpl, $scriptProperties);
+}
+if (empty($content)) {
 	return $modx->lexicon('af_err_chunk_nf', array('name' => $tpl));
 }
 

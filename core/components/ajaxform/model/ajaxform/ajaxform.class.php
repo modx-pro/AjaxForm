@@ -5,8 +5,6 @@ class AjaxForm {
 	public $modx;
 	/** @var array $config */
 	public $config;
-	/** @var array $initialized */
-	public $initialized = array();
 
 
 	/**
@@ -24,7 +22,7 @@ class AjaxForm {
 
 		$this->config = array_merge(array(
 			'assetsUrl' => $assetsUrl,
-			'actionUrl' => $assetsUrl.'action.php',
+			'actionUrl' => $assetsUrl . 'action.php',
 
 			'formSelector' => 'ajax_form',
 			'closeMessage' => $this->modx->lexicon('af_message_close_all'),
@@ -43,13 +41,12 @@ class AjaxForm {
 	 * Initializes AjaxForm into different contexts.
 	 *
 	 * @deprecated
-	 * @param string $ctx The context to load. Defaults to web.
-	 * @param array $scriptProperties array with additional parameters
 	 *
 	 * @return boolean
 	 */
-	public function initialize($ctx = 'web', $scriptProperties = array()) {
+	public function initialize() {
 		$this->loadJsCss();
+
 		return true;
 	}
 
@@ -78,9 +75,10 @@ class AjaxForm {
 			'formSelector' => "form.{$this->config['formSelector']}",
 			'pageId' => !empty($this->modx->resource)
 				? $this->modx->resource->get('id')
-				: 0
+				: 0,
 		));
-		$this->modx->regClientScript('<script type="text/javascript">' . trim($objectName) . '.initialize(' . $config . ');</script>', true);
+		$objectName = trim($objectName);
+		$this->modx->regClientScript("<script type=\"text/javascript\">{$objectName}.initialize({$config});</script>", true);
 	}
 
 
@@ -123,6 +121,7 @@ class AjaxForm {
 			if (strtolower($snippet->name) == 'formit') {
 				$response = $this->handleFormIt($scriptProperties);
 			}
+
 			return $response;
 		}
 		else {
@@ -145,20 +144,20 @@ class AjaxForm {
 
 		$errors = array();
 		foreach ($scriptProperties['fields'] as $k => $v) {
-			if (isset($this->modx->placeholders[$plPrefix.'error.'.$k])) {
-				$errors[$k] = $this->modx->placeholders[$plPrefix.'error.'.$k];
+			if (isset($this->modx->placeholders[$plPrefix . 'error.' . $k])) {
+				$errors[$k] = $this->modx->placeholders[$plPrefix . 'error.' . $k];
 			}
 		}
 
 		if (!empty($errors)) {
-			$message = !empty($this->modx->placeholders[$plPrefix.'validation_error_message'])
-				? $this->modx->placeholders[$plPrefix.'validation_error_message']
+			$message = !empty($this->modx->placeholders[$plPrefix . 'validation_error_message'])
+				? $this->modx->placeholders[$plPrefix . 'validation_error_message']
 				: 'af_err_has_errors';
 			$status = 'error';
 		}
 		else {
-			$message = isset($this->modx->placeholders[$plPrefix.'successMessage'])
-				? $this->modx->placeholders[$plPrefix.'successMessage']
+			$message = isset($this->modx->placeholders[$plPrefix . 'successMessage'])
+				? $this->modx->placeholders[$plPrefix . 'successMessage']
 				: 'af_success_submit';
 			$status = 'success';
 		}
@@ -171,7 +170,7 @@ class AjaxForm {
 	 * This method returns an error of the order
 	 *
 	 * @param string $message A lexicon key for error message
-	 * @param array $data.Additional data, for example cart status
+	 * @param array $data .Additional data, for example cart status
 	 * @param array $placeholders Array with placeholders for lexicon entry
 	 *
 	 * @return array|string $response
@@ -183,7 +182,9 @@ class AjaxForm {
 			'data' => $data,
 		);
 
-		return $this->config['json_response'] ? $this->modx->toJSON($response) : $response;
+		return $this->config['json_response']
+			? $this->modx->toJSON($response)
+			: $response;
 	}
 
 
@@ -191,7 +192,7 @@ class AjaxForm {
 	 * This method returns an success of the order
 	 *
 	 * @param string $message A lexicon key for success message
-	 * @param array $data.Additional data, for example cart status
+	 * @param array $data .Additional data, for example cart status
 	 * @param array $placeholders Array with placeholders for lexicon entry
 	 *
 	 * @return array|string $response
@@ -203,6 +204,8 @@ class AjaxForm {
 			'data' => $data,
 		);
 
-		return $this->config['json_response'] ? $this->modx->toJSON($response) : $response;
+		return $this->config['json_response']
+			? $this->modx->toJSON($response)
+			: $response;
 	}
 }
