@@ -1,5 +1,9 @@
 Changelog for AjaxForm.
 
+1.1.3-pl
+==============
+- Improved validation of files.
+
 1.1.2-pl
 ==============
 - Compatibility with FormIt ReCaptcha.

@@ -27,7 +27,7 @@ elseif (empty($_REQUEST['af_action'])) {
 	echo $AjaxForm->error('af_err_action_ns');
 }
 else {
-	echo $AjaxForm->process($_REQUEST['af_action'], $_REQUEST);
+	echo $AjaxForm->process($_REQUEST['af_action'], array_merge($_FILES, $_REQUEST));
 }
 
 @session_write_close();
