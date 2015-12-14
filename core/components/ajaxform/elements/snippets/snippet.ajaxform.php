@@ -24,7 +24,7 @@ if (empty($content)) {
 }
 
 // Add selector to tag form
-if (preg_match('/<form.*?class="(.*?)"/', $content, $matches)) {
+if (preg_match('/<form.*?class="|\'(.*?)"|\'/', $content, $matches)) {
 	$classes = explode(' ', $matches[1]);
 	if (!in_array($formSelector, $classes)) {
 		$classes[] = $formSelector;
