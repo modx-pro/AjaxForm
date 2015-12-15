@@ -8,22 +8,22 @@ var AjaxForm = {
 			document.write('<script src="'+afConfig.assetsUrl+'js/lib/jquery.jgrowl.min.js"><\/script>');
 		}
 
-		$(document).ready(function() {
-			$.jGrowl.defaults.closerTemplate = '<div>[ '+afConfig.closeMessage+' ]</div>';
+		jQuery(document).ready(function() {
+			jQuery.jGrowl.defaults.closerTemplate = '<div>[ '+afConfig.closeMessage+' ]</div>';
 		});
 
-		$(document).on('submit', afConfig.formSelector, function(e) {
-			$(this).ajaxSubmit({
+		jQuery(document).on('submit', afConfig.formSelector, function(e) {
+			jQuery(this).ajaxSubmit({
 				dataType: 'json'
 				,data: {pageId: afConfig.pageId}
 				,url: afConfig.actionUrl
 				,beforeSerialize: function(form, options) {
 					form.find(':submit').each(function() {
-						if (!form.find('input[type="hidden"][name="' + $(this).attr('name') + '"]').length) {
-							$(form).append(
-								$('<input type="hidden">').attr({
-									name: $(this).attr('name'),
-									value: $(this).attr('value')
+						if (!form.find('input[type="hidden"][name="' + jQuery(this).attr('name') + '"]').length) {
+							jQuery(form).append(
+								jQuery('<input type="hidden">').attr({
+									name: jQuery(this).attr('name'),
+									value: jQuery(this).attr('value')
 								})
 							);
 						}
@@ -41,7 +41,7 @@ var AjaxForm = {
 				,success: function(response, status, xhr, form) {
 					form.find('input,textarea,select,button').attr('disabled', false);
 					response.form=form;
-					$(document).trigger('af_complete', response);
+					jQuery(document).trigger('af_complete', response);
 					if (!response.success) {
 						AjaxForm.Message.error(response.message);
 						if (response.data) {
@@ -66,8 +66,8 @@ var AjaxForm = {
 			return false;
 		});
 
-		$(document).on('reset', afConfig.formSelector, function(e) {
-			$(this).find('.error').html('');
+		jQuery(document).on('reset', afConfig.formSelector, function(e) {
+			jQuery(this).find('.error').html('');
 			AjaxForm.Message.close();
 		});
 	}
@@ -79,22 +79,22 @@ AjaxForm.Message = {
 	success: function(message, sticky) {
 		if (message) {
 			if (!sticky) {sticky = false;}
-			$.jGrowl(message, {theme: 'af-message-success', sticky: sticky});
+			jQuery.jGrowl(message, {theme: 'af-message-success', sticky: sticky});
 		}
 	}
 	,error: function(message, sticky) {
 		if (message) {
 			if (!sticky) {sticky = false;}
-			$.jGrowl(message, {theme: 'af-message-error', sticky: sticky});
+			jQuery.jGrowl(message, {theme: 'af-message-error', sticky: sticky});
 		}
 	}
 	,info: function(message, sticky) {
 		if (message) {
 			if (!sticky) {sticky = false;}
-			$.jGrowl(message, {theme: 'af-message-info', sticky: sticky});
+			jQuery.jGrowl(message, {theme: 'af-message-info', sticky: sticky});
 		}
 	}
 	,close: function() {
-		$.jGrowl('close');
+		jQuery.jGrowl('close');
 	}
 };
