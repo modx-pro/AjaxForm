@@ -24,34 +24,38 @@ if (empty($content)) {
 }
 
 // Add selector to tag form
-if (preg_match('/<form.*?class="(.*?)"/', $content, $matches)) {
+if (preg_match('#<form.*?class=(?:"|\')(.*?)(?:"|\')#i', $content, $matches)) {
 	$classes = explode(' ', $matches[1]);
 	if (!in_array($formSelector, $classes)) {
 		$classes[] = $formSelector;
-		$classes = str_replace('class="' . $matches[1] . '"', 'class="' . implode(' ', $classes) . '"', $matches[0]);
-		$content = str_replace($matches[0], $classes, $content);
+		$classes = preg_replace(
+			'#class=(?:"|\')' . $matches[1] . '(?:"|\')#i',
+			'class="' . implode(' ', $classes) . '"',
+			$matches[0]
+		);
+		$content = str_ireplace($matches[0], $classes, $content);
 	}
 }
 else {
-	$content = str_replace('<form', '<form class="' . $formSelector . '"', $content);
+	$content = str_ireplace('<form', '<form class="' . $formSelector . '"', $content);
 }
 
 // Add method = post
-if (preg_match('/<form.*?method="(.*?)"/', $content)) {
-	$content = preg_replace('/<form(.*?)method="(.*?)"/', '<form\\1method="post"', $content);
+if (preg_match('#<form.*?method=(?:"|\')(.*?)(?:"|\')#i', $content)) {
+	$content = preg_replace('#<form(.*?)method=(?:"|\')(.*?)(?:"|\')#i', '<form\\1method="post"', $content);
 }
 else {
-	$content = str_replace('<form', '<form method="post"', $content);
+	$content = str_ireplace('<form', '<form method="post"', $content);
 }
 
 // Add action for form processing
 $hash = md5(http_build_query($scriptProperties));
 $action = '<input type="hidden" name="af_action" value="' . $hash . '" />';
-if ((strpos($content, '</form>') !== false)) {
-	if (preg_match('/<input.*?name="af_action".*?>/', $content, $matches)) {
-		$content = str_replace($matches[0], '', $content);
+if ((stripos($content, '</form>') !== false)) {
+	if (preg_match('#<input.*?name=(?:"|\')af_action(?:"|\').*?>#i', $content, $matches)) {
+		$content = str_ireplace($matches[0], '', $content);
 	}
-	$content = str_replace('</form>', "\n\t$action\n</form>", $content);
+	$content = str_ireplace('</form>', "\n\t$action\n</form>", $content);
 }
 
 // Save settings to user`s session

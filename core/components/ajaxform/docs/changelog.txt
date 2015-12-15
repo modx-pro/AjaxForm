@@ -1,5 +1,10 @@
 Changelog for AjaxForm.
 
+1.1.4-pl
+==============
+- [#27] Support of single quotes in attributes of form.
+- Case-insensitive check of attributes of form.
+
 1.1.3-pl
 ==============
 - Improved validation of files.
