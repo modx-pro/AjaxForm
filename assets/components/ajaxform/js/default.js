@@ -59,6 +59,7 @@ var AjaxForm = {
 						AjaxForm.Message.success(response.message);
 						form.find('.error').removeClass('error');
 						form[0].reset();
+						if (typeof grecaptcha != "undefined") {grecaptcha.reset();}
 					}
 				}
 			});
