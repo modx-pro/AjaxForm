@@ -46,9 +46,13 @@ var AjaxForm = {
                     if (!response.success) {
                         AjaxForm.Message.error(response.message);
                         if (response.data) {
-                            var key, value;
+                            var key, value, focused;
                             for (key in response.data) {
                                 if (response.data.hasOwnProperty(key)) {
+                                    if (!focused) {
+                                        form.find('[name="' + key + '"]').focus();
+                                        focused = true;
+                                    }
                                     value = response.data[key];
                                     form.find('.error_' + key).html(value).addClass('error');
                                     form.find('[name="' + key + '"]').addClass('error');
