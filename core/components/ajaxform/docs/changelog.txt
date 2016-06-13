@@ -1,5 +1,9 @@
 Changelog for AjaxForm.
 
+1.1.6-pl
+==============
+- [#33] Improved the processing of javascript errors.
+
 1.1.5-pl
 ==============
 - [#30] Improved support of ReCaptcha.

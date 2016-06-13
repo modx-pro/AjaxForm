@@ -76,6 +76,12 @@ var AjaxForm = {
             return false;
         });
 
+        $(document).on('keypress change', '.error', function () {
+            var key = $(this).attr('name');
+            $(this).removeClass('error');
+            $('.error_' + key).html('').removeClass('error');
+        });
+
         $(document).on('reset', afConfig['formSelector'], function () {
             $(this).find('.error').html('');
             AjaxForm.Message.close();
