@@ -1,5 +1,9 @@
 Changelog for AjaxForm.
 
+1.1.7-pl
+==============
+- Fixed possible blind SQL injection in action file.
+
 1.1.6-pl
 ==============
 - [#33] Improved the processing of javascript errors.
