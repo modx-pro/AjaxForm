@@ -1,5 +1,9 @@
 Changelog for AjaxForm.
 
+1.1.8-pl
+==============
+- Updated jGrowl to version 1.4.5.
+
 1.1.7-pl
 ==============
 - Fixed possible blind SQL injection in action file.
