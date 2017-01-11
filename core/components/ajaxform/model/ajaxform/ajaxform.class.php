@@ -102,7 +102,19 @@ class AjaxForm
     public function process($action, array $fields = array())
     {
         if (!isset($_SESSION['AjaxForm'][$action])) {
-            return $this->error('af_err_action_nf');
+        	$this->modx->log(1,'$fields[pageId] '.$fields['pageId']);
+        	if ($res = $this->modx->getObject('modResource',$fields['pageId'])){
+				$tpl = $this->modx->getObject('modTemplate',$res->template);
+				$tpl = $tpl->content;
+				preg_match_all('/{\$_modx->runSnippet\(\'!Ajaxform\',\s((?:(?!\)}).)*)/i', $tpl, $matches);
+				if(isset($matches[1][0])){
+					eval('$scriptProperties = '. $matches[1][0] .';');
+					$_SESSION['AjaxForm'][$action] = $scriptProperties;
+					$hash = md5(http_build_query($scriptProperties));
+				}
+				else return $this->error('af_err_action_nf');
+			}
+			else return $this->error('af_err_action_nf');
         }
         unset($fields['af_action'], $_POST['af_action']);
 
