@@ -12,7 +12,7 @@ var AjaxForm = {
             $.jGrowl.defaults.closerTemplate = '<div>[ ' + afConfig['closeMessage'] + ' ]</div>';
         });
 
-        $(document).on('submit', afConfig['formSelector'], function (e) {
+        $(document).off('submit').on('submit', afConfig['formSelector'], function (e) {
             $(this).ajaxSubmit({
                 dataType: 'json',
                 data: {pageId: afConfig['pageId']},
