@@ -1,5 +1,9 @@
 Changelog for AjaxForm.
 
+1.1.9-pl
+==============
+- [#40] Improved javascript initialization of a form.
+
 1.1.8-pl
 ==============
 - Updated jGrowl to version 1.4.5.
