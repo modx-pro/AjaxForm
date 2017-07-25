@@ -1,4 +1,4 @@
-<form action="" method="post" class="ajax_form af_example">
+<form action="[[~[[*id]]]]" method="post" class="ajax_form af_example">
 
     <div class="form-group">
         <label class="control-label" for="af_name">[[%af_label_name]]</label>
