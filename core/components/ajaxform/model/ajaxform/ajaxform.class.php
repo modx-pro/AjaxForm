@@ -75,19 +75,21 @@ class AjaxForm
             }
         }
 
-        $config = $this->modx->toJSON(array(
-            'assetsUrl' => $this->config['assetsUrl'],
-            'actionUrl' => str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $this->config['actionUrl']),
-            'closeMessage' => $this->config['closeMessage'],
-            'formSelector' => "form.{$this->config['formSelector']}",
-            'pageId' => !empty($this->modx->resource)
-                ? $this->modx->resource->get('id')
-                : 0,
-        ));
-        $objectName = trim($objectName);
-        $this->modx->regClientScript(
-            "<script type=\"text/javascript\">{$objectName}.initialize({$config});</script>", true
-        );
+        if ($action = trim($this->config['actionUrl'])) {
+            $config = $this->modx->toJSON(array(
+                'assetsUrl' => $this->config['assetsUrl'],
+                'actionUrl' => str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $action),
+                'closeMessage' => $this->config['closeMessage'],
+                'formSelector' => "form.{$this->config['formSelector']}",
+                'pageId' => !empty($this->modx->resource)
+                    ? $this->modx->resource->get('id')
+                    : 0,
+            ));
+            $objectName = trim($objectName);
+            $this->modx->regClientScript(
+                "<script type=\"text/javascript\">{$objectName}.initialize({$config});</script>", true
+            );
+        }
     }
 
 
