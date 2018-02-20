@@ -105,7 +105,7 @@ class AjaxForm
         	if ($res = $this->modx->getObject('modResource',$fields['pageId'])){
 				$tpl = $this->modx->getObject('modTemplate',$res->template);
 				$tpl = $tpl->content;
-				preg_match_all('/{\$_modx->runSnippet\(\'!Ajaxform\',\s((?:(?!\)}).)*)/i', $tpl, $matches);
+				preg_match_all('/{\$_modx->runSnippet\(\'(?:!Ajaxform|@FILE\s[^\']*\/snippet\.ajaxform\.php)\',\s((?:(?!\)}).)*)/i', $tpl, $matches);
 				if(isset($matches[1][0])){
 					eval('$scriptProperties = '. $matches[1][0] .';');
 					if ($scriptProperties){
