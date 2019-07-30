@@ -19,11 +19,15 @@ var AjaxForm = {
                 url: afConfig['actionUrl'],
                 beforeSerialize: function (form) {
                     form.find(':submit').each(function () {
-                        if (!form.find('input[type="hidden"][name="' + $(this).attr('name') + '"]').length) {
+                        var $submit = $(this);
+                        if (!$submit.attr('name')) {
+                            return;
+                        }
+                        if (!form.find('input[type="hidden"][name="' + $submit.attr('name') + '"]').length) {
                             $(form).append(
                                 $('<input type="hidden">').attr({
-                                    name: $(this).attr('name'),
-                                    value: $(this).attr('value')
+                                    name: $submit.attr('name'),
+                                    value: $submit.attr('value'),
                                 })
                             );
                         }
