@@ -80,6 +80,7 @@ class AjaxForm
             'actionUrl' => str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $this->config['actionUrl']),
             'closeMessage' => $this->config['closeMessage'],
             'formSelector' => "form.{$this->config['formSelector']}",
+            'clearFieldsOnSuccess' => $this->modx->getOption('clearFieldsOnSuccess', $this->config, 1,false),
             'pageId' => !empty($this->modx->resource)
                 ? $this->modx->resource->get('id')
                 : 0,
