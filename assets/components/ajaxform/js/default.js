@@ -67,7 +67,9 @@ var AjaxForm = {
                     else {
                         AjaxForm.Message.success(response.message);
                         form.find('.error').removeClass('error');
-                        form[0].reset();
+                        if (afConfig['clearFieldsOnSuccess'] == 1){
+                            form[0].reset();
+                        }
                         //noinspection JSUnresolvedVariable
                         if (typeof(grecaptcha) != 'undefined') {
                             //noinspection JSUnresolvedVariable
