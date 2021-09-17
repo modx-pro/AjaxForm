@@ -100,12 +100,14 @@ class AjaxForm
      */
     public function process($action, array $fields = array())
     {
-        if (!isset($_SESSION['AjaxForm'][$action])) {
+        $scriptProperties = !empty(session_id())
+            ? @$_SESSION['AjaxForm'][$action]
+            : $this->modx->cacheManager->get('ajaxform/props_' . $action);
+        if (empty($scriptProperties)) {
             return $this->error('af_err_action_nf');
         }
         unset($fields['af_action'], $_POST['af_action']);
 
-        $scriptProperties = $_SESSION['AjaxForm'][$action];
         $scriptProperties['fields'] = $fields;
         $scriptProperties['AjaxForm'] = $this;
 

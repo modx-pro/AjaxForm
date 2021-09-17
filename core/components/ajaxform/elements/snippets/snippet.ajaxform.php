@@ -56,8 +56,14 @@ if ((stripos($content, '</form>') !== false)) {
     $content = str_ireplace('</form>', "\n\t$action\n</form>", $content);
 }
 
-// Save settings to user`s session
-$_SESSION['AjaxForm'][$hash] = $scriptProperties;
+// Save snippet properties
+if (!empty(session_id())) {
+    // ... to user`s session
+    $_SESSION['AjaxForm'][$hash] = $scriptProperties;
+} else {
+    // ... to cache file
+    $modx->cacheManager->set('ajaxform/props_' . $hash, $scriptProperties, 3600);
+}
 
 // Call snippet for preparation of form
 $action = !empty($_REQUEST['af_action'])
