@@ -13,25 +13,30 @@ var AjaxForm = {
         });
 
         $(document).off('submit', afConfig['formSelector']).on('submit', afConfig['formSelector'], function (e) {
+            var $submitter = undefined;
+
             $(this).ajaxSubmit({
                 dataType: 'json',
                 data: {pageId: afConfig['pageId']},
                 url: afConfig['actionUrl'],
                 beforeSerialize: function (form) {
-                    form.find(':submit').each(function () {
-                        var $submit = $(this);
-                        if (!$submit.attr('name')) {
-                            return;
-                        }
-                        if (!form.find('input[type="hidden"][name="' + $submit.attr('name') + '"]').length) {
-                            $(form).append(
-                                $('<input type="hidden">').attr({
-                                    name: $submit.attr('name'),
-                                    value: $submit.attr('value'),
-                                })
-                            );
-                        }
-                    })
+                    if (e.originalEvent.submitter) {
+                        $submitter = $(e.originalEvent.submitter);
+                        $submitter.each(function () {
+                            var $submit = $(this);
+                            if (!$submit.attr('name')) {
+                                return;
+                            }
+                            if (!form.find('input[type="hidden"][name="' + $submit.attr('name') + '"]').length) {
+                                $(form).append(
+                                    $('<input type="hidden">').attr({
+                                        name: $submit.attr('name'),
+                                        value: $submit.attr('value'),
+                                    })
+                                );
+                            }
+                        });
+                    }
                 },
                 beforeSubmit: function (fields, form) {
                     //noinspection JSUnresolvedVariable
@@ -45,8 +50,22 @@ var AjaxForm = {
                 },
                 success: function (response, status, xhr, form) {
                     form.find('input,textarea,select,button').attr('disabled', false);
+
                     response.form = form;
                     $(document).trigger('af_complete', response);
+
+                    if ($submitter.length) {
+                        $submitter.each(function () {
+                            var $submit = $(this);
+                            if (!$submit.attr('name')) {
+                                return;
+                            }
+                            let $hidden = form.find('input[type="hidden"][name="' + $submit.attr('name') + '"]');
+                            $hidden.length && $hidden.remove();
+                        });
+                        $submitter = undefined;
+                    }
+
                     if (!response.success) {
                         AjaxForm.Message.error(response.message);
                         if (response.data) {
