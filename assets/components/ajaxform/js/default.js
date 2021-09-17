@@ -1,11 +1,16 @@
 var AjaxForm = {
 
     initialize: function (afConfig) {
+        var script;
         if (!jQuery().ajaxForm) {
-            document.write('<script src="' + afConfig['assetsUrl'] + 'js/lib/jquery.form.min.js"><\/script>');
+            script = document.createElement('script');
+            script.src = afConfig['assetsUrl'] + 'js/lib/jquery.form.min.js';
+            document.body.appendChild(script);
         }
         if (!jQuery().jGrowl) {
-            document.write('<script src="' + afConfig['assetsUrl'] + 'js/lib/jquery.jgrowl.min.js"><\/script>');
+            script = document.createElement('script');
+            script.src = afConfig['assetsUrl'] + 'js/lib/jquery.jgrowl.min.js';
+            document.body.appendChild(script);
         }
 
         $(document).ready(function () {
