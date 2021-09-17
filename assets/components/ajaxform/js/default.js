@@ -67,7 +67,7 @@ var AjaxForm = {
                     else {
                         AjaxForm.Message.success(response.message);
                         form.find('.error').removeClass('error');
-                        if (afConfig['clearFieldsOnSuccess'] == 1){
+                        if (!!afConfig.clearFieldsOnSuccess) {
                             form[0].reset();
                         }
                         //noinspection JSUnresolvedVariable
