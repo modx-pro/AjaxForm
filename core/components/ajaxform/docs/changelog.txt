@@ -1,4 +1,11 @@
-Changelog for AjaxForm.
+1.2.0-beta
+==============
+- Added Ukrainian lexicons
+- Added `clearFieldsOnSuccess` snippet parameter
+- Added work with disabled sessions for anonymous users
+- Fixed adding the value of the button you clicked to submit the form to the submitted data
+- Fixed: `document.write` has been replaced by `document.body.appendChild`
+- Fixed: cut `type="text/javascript"` from the `<script>` tag
 
 1.1.9-pl
 ==============
