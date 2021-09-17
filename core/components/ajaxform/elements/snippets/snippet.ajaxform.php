@@ -1,6 +1,7 @@
 <?php
-/** @var array $scriptProperties */
+/** @var modX $modx */
 /** @var AjaxForm $AjaxForm */
+/** @var array $scriptProperties */
 if (!$modx->loadClass('ajaxform', MODX_CORE_PATH . 'components/ajaxform/model/ajaxform/', false, true)) {
     return false;
 }

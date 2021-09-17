@@ -31,6 +31,10 @@ $tmp = array(
         'type' => 'textfield',
         'value' => 'AjaxForm',
     ),
+    'clearFieldsOnSuccess' => array(
+        'type' => 'combo-boolean',
+        'value' => true,
+    ),
 );
 
 foreach ($tmp as $k => $v) {

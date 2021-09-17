@@ -1,5 +1,4 @@
 var AjaxForm = {
-
     initialize: function (afConfig) {
         var script;
         if (!jQuery().ajaxForm) {
