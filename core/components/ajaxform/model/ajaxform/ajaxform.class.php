@@ -85,9 +85,7 @@ class AjaxForm
                 : 0,
         ));
         $objectName = trim($objectName);
-        $this->modx->regClientScript(
-            "<script type=\"text/javascript\">{$objectName}.initialize({$config});</script>", true
-        );
+        $this->modx->regClientHTMLBlock("<script>{$objectName}.initialize({$config});</script>");
     }
 
 
