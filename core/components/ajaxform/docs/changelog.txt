@@ -1,4 +1,8 @@
-1.2.0-beta
+1.2.1-pl
+==============
+- Fixed JS error `Cannot read properties of undefined (reading 'defaults')`
+
+1.2.0-pl
 ==============
 - Added Ukrainian lexicons
 - Added `clearFieldsOnSuccess` snippet parameter

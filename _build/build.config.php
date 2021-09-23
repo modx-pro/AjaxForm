@@ -4,7 +4,7 @@
 define('PKG_NAME', 'AjaxForm');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
 
-define('PKG_VERSION', '1.2.0');
+define('PKG_VERSION', '1.2.1');
 define('PKG_RELEASE', 'pl');
 define('PKG_AUTO_INSTALL', true);
 
