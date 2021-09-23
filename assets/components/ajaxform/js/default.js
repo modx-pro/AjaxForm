@@ -6,15 +6,20 @@ var AjaxForm = {
             script.src = afConfig['assetsUrl'] + 'js/lib/jquery.form.min.js';
             document.body.appendChild(script);
         }
+
+        var jGrowlSetup = function () {
+            $.jGrowl.defaults.closerTemplate = '<div>[ ' + afConfig['closeMessage'] + ' ]</div>';
+        };
         if (!jQuery().jGrowl) {
             script = document.createElement('script');
             script.src = afConfig['assetsUrl'] + 'js/lib/jquery.jgrowl.min.js';
+            script.onload = jGrowlSetup;
             document.body.appendChild(script);
+        } else {
+            $(document).ready(function () {
+                jGrowlSetup();
+            });
         }
-
-        $(document).ready(function () {
-            $.jGrowl.defaults.closerTemplate = '<div>[ ' + afConfig['closeMessage'] + ' ]</div>';
-        });
 
         $(document).off('submit', afConfig['formSelector']).on('submit', afConfig['formSelector'], function (e) {
             var $submitter = undefined;
