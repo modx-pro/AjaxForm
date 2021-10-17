@@ -1,3 +1,7 @@
+1.2.2-pl
+==============
+- Fixed JS error `undefined is not an object (evaluating '$submitter.length')`
+
 1.2.1-pl
 ==============
 - Fixed JS error `Cannot read properties of undefined (reading 'defaults')`
