@@ -63,7 +63,7 @@ var AjaxForm = {
                     response.form = form;
                     $(document).trigger('af_complete', response);
 
-                    if ($submitter.length) {
+                    if ($submitter && $submitter.length) {
                         $submitter.each(function () {
                             var $submit = $(this);
                             if (!$submit.attr('name')) {
