@@ -33,12 +33,19 @@ class AjaxForm
             'closeMessage' => $this->modx->lexicon('af_message_close_all'),
             'json_response' => true,
 
+            'fileUplodedProgressMsg' => $this->modx->lexicon('af_message_uploded_progress'),
+            'fileUplodedSuccessMsg' => $this->modx->lexicon('af_message_uploded_success'),
+            'fileUplodedErrorMsg' => $this->modx->lexicon('af_message_uploded_error'),
+            'ajaxErrorMsg' => $this->modx->lexicon('af_message_ajax_error'),
+
             'corePath' => $corePath,
             'assetsPath' => $assetsPath,
 
-            'frontend_css' => '[[+assetsUrl]]css/default.css',
-            'frontend_js' => '[[+assetsUrl]]js/default.js',
+            'frontend_css' => $this->modx->getOption('af_frontend_css') ?: '[[+assetsUrl]]css/default.css',
+            'frontend_js' => $this->modx->getOption('af_frontend_js') ?: '[[+assetsUrl]]js/default.js',
         ), $config);
+
+        $this->config['formSelector'] = $this->config['formSelector'] .'_'. rand();
     }
 
 
@@ -79,14 +86,24 @@ class AjaxForm
             'assetsUrl' => $this->config['assetsUrl'],
             'actionUrl' => str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $this->config['actionUrl']),
             'closeMessage' => $this->config['closeMessage'],
+            'clearFieldsOnSuccess' => $this->config['clearFieldsOnSuccess'],
+
+            'fileUplodedProgressMsg' => $this->config['fileUplodedProgressMsg'],
+            'fileUplodedSuccessMsg' => $this->config['fileUplodedSuccessMsg'],
+            'fileUplodedErrorMsg' => $this->config['fileUplodedErrorMsg'],
+            'showUplodedProgress' => $this->config['showUplodedProgress'],
+            'ajaxErrorMsg' => $this->config['ajaxErrorMsg'],
+
             'formSelector' => "form.{$this->config['formSelector']}",
-            'clearFieldsOnSuccess' => $this->modx->getOption('clearFieldsOnSuccess', $this->config, 1, false),
             'pageId' => !empty($this->modx->resource)
                 ? $this->modx->resource->get('id')
                 : 0,
         ));
+
         $objectName = trim($objectName);
-        $this->modx->regClientHTMLBlock("<script>{$objectName}.initialize({$config});</script>");
+        $this->modx->regClientScript(
+            "<script type=\"text/javascript\">new {$objectName}(\".{$this->config['formSelector']}\",{$config});</script>", true
+        );
     }
 
 
@@ -100,14 +117,12 @@ class AjaxForm
      */
     public function process($action, array $fields = array())
     {
-        $scriptProperties = !empty(session_id())
-            ? @$_SESSION['AjaxForm'][$action]
-            : $this->modx->cacheManager->get('ajaxform/props_' . $action);
-        if (empty($scriptProperties)) {
+        if (!isset($_SESSION['AjaxForm'][$action])) {
             return $this->error('af_err_action_nf');
         }
         unset($fields['af_action'], $_POST['af_action']);
 
+        $scriptProperties = $_SESSION['AjaxForm'][$action];
         $scriptProperties['fields'] = $fields;
         $scriptProperties['AjaxForm'] = $this;
 

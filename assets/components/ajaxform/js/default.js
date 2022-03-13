@@ -1,157 +1,212 @@
-var AjaxForm = {
-    initialize: function (afConfig) {
-        var script;
-        if (!jQuery().ajaxForm) {
-            script = document.createElement('script');
-            script.src = afConfig['assetsUrl'] + 'js/lib/jquery.form.min.js';
-            document.body.appendChild(script);
-        }
+class AjaxForm {
+    constructor(selector, config) {
 
-        var jGrowlSetup = function () {
-            $.jGrowl.defaults.closerTemplate = '<div>[ ' + afConfig['closeMessage'] + ' ]</div>';
-        };
-        if (!jQuery().jGrowl) {
-            script = document.createElement('script');
-            script.src = afConfig['assetsUrl'] + 'js/lib/jquery.jgrowl.min.js';
-            script.onload = jGrowlSetup;
-            document.body.appendChild(script);
-        } else {
-            $(document).ready(function () {
-                jGrowlSetup();
-            });
-        }
+        this.form = document.querySelector(selector);
 
-        $(document).off('submit', afConfig['formSelector']).on('submit', afConfig['formSelector'], function (e) {
-            var $submitter = undefined;
-
-            $(this).ajaxSubmit({
-                dataType: 'json',
-                data: {pageId: afConfig['pageId']},
-                url: afConfig['actionUrl'],
-                beforeSerialize: function (form) {
-                    if (e.originalEvent.submitter) {
-                        $submitter = $(e.originalEvent.submitter);
-                        $submitter.each(function () {
-                            var $submit = $(this);
-                            if (!$submit.attr('name')) {
-                                return;
-                            }
-                            if (!form.find('input[type="hidden"][name="' + $submit.attr('name') + '"]').length) {
-                                $(form).append(
-                                    $('<input type="hidden">').attr({
-                                        name: $submit.attr('name'),
-                                        value: $submit.attr('value'),
-                                    })
-                                );
-                            }
-                        });
-                    }
-                },
-                beforeSubmit: function (fields, form) {
-                    //noinspection JSUnresolvedVariable
-                    if (typeof(afValidated) != 'undefined' && afValidated == false) {
-                        return false;
-                    }
-                    form.find('.error').html('');
-                    form.find('.error').removeClass('error');
-                    form.find('input,textarea,select,button').attr('disabled', true);
-                    return true;
-                },
-                success: function (response, status, xhr, form) {
-                    form.find('input,textarea,select,button').attr('disabled', false);
-
-                    response.form = form;
-                    $(document).trigger('af_complete', response);
-
-                    if ($submitter && $submitter.length) {
-                        $submitter.each(function () {
-                            var $submit = $(this);
-                            if (!$submit.attr('name')) {
-                                return;
-                            }
-                            let $hidden = form.find('input[type="hidden"][name="' + $submit.attr('name') + '"]');
-                            $hidden.length && $hidden.remove();
-                        });
-                        $submitter = undefined;
-                    }
-
-                    if (!response.success) {
-                        AjaxForm.Message.error(response.message);
-                        if (response.data) {
-                            var key, value, focused;
-                            for (key in response.data) {
-                                if (response.data.hasOwnProperty(key)) {
-                                    if (!focused) {
-                                        form.find('[name="' + key + '"]').focus();
-                                        focused = true;
-                                    }
-                                    value = response.data[key];
-                                    form.find('.error_' + key).html(value).addClass('error');
-                                    form.find('[name="' + key + '"]').addClass('error');
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        AjaxForm.Message.success(response.message);
-                        form.find('.error').removeClass('error');
-                        if (!!afConfig.clearFieldsOnSuccess) {
-                            form[0].reset();
-                        }
-                        //noinspection JSUnresolvedVariable
-                        if (typeof(grecaptcha) != 'undefined') {
-                            //noinspection JSUnresolvedVariable
-                            grecaptcha.reset();
-                        }
-                    }
-                }
-            });
-            e.preventDefault();
+        if (!this.form) {
+            console.error('Form not found. Check the correctness of the selector.');
             return false;
-        });
+        }
 
-        $(document).on('keypress change', '.error', function () {
-            var key = $(this).attr('name');
-            $(this).removeClass('error');
-            $('.error_' + key).html('').removeClass('error');
-        });
+        this.defaults = {
+            clearFieldsOnSuccess: true,
+            actionUrl: 'assets/components/ajaxform/action.php',
+            pageId: 1,
+            fileUplodedProgressMsg: '',
+            fileUplodedSuccessMsg: '',
+            fileUplodedErrorMsg: '',
+            ajaxErrorMsg: '',
+            showUplodedProgress: false
+        }
 
-        $(document).on('reset', afConfig['formSelector'], function () {
-            $(this).find('.error').html('');
-            AjaxForm.Message.close();
+        this.config = Object.assign({}, this.defaults, config);
+
+        // adding the necessary handlers
+        this.addHandlers(['submit', 'reset'], 'Form');
+    }
+
+
+    addHandlers(handlers, postfix) {
+        handlers.forEach(handler => {
+            this.form.addEventListener(handler, this['on' + handler + postfix].bind(this));
         });
     }
 
-};
+    onsubmitForm(e) {
+        e.preventDefault();
+        if (this.beforeSubmit(e.target)) {
+            this.beforeSerialize(e.target, e.submitter);
+            let params = new FormData(e.target);
+            params.append('pageId', this.pageId);
+            this.sendAjax(this.config.actionUrl, params, this.responseHandler.bind(this), e.target);
+        }
+    }
 
+    onresetForm(e) {
+        if (AjaxForm.Message !== undefined) {
+            AjaxForm.Message.close();
+        }
+        let currentErrors = e.target.querySelectorAll('.error');
+        if (currentErrors.length) {
+            currentErrors.forEach(this.resetErrors);
+        }
+    }
 
-//noinspection JSUnusedGlobalSymbols
-AjaxForm.Message = {
-    success: function (message, sticky) {
-        if (message) {
-            if (!sticky) {
-                sticky = false;
-            }
-            $.jGrowl(message, {theme: 'af-message-success', sticky: sticky});
+    resetErrors(e) {
+        const elem = e.target || e,
+            form = elem.closest('form');
+        elem.classList.remove('error');
+        if (elem.name && form.length) {
+            form.querySelector('.error_' + elem.name).innerHTML = '';
         }
-    },
-    error: function (message, sticky) {
-        if (message) {
-            if (!sticky) {
-                sticky = false;
-            }
-            $.jGrowl(message, {theme: 'af-message-error', sticky: sticky});
+    }
+
+    // function rewritten in pure js from the original file
+    // i don't know what this function is for
+    beforeSerialize(form, submitter) {
+        let submitVarInput = form.querySelector('input[type="hidden"][name="' + submitter.name + '"]');
+        if (!submitVarInput) {
+            submitVarInput = document.createElement('input');
+            submitVarInput.setAttribute('type', 'hidden');
+            submitVarInput.setAttribute('name', submitter.name);
+            submitVarInput.setAttribute('value', submitter.value);
+            form.appendChild(submitVarInput);
         }
-    },
-    info: function (message, sticky) {
-        if (message) {
-            if (!sticky) {
-                sticky = false;
-            }
-            $.jGrowl(message, {theme: 'af-message-info', sticky: sticky});
+    }
+
+    beforeSubmit(form) {
+        const currentErrors = form.querySelectorAll('.error');
+        if (currentErrors.length) currentErrors.forEach(this.resetErrors);
+        return true;
+    }
+
+    // Submitting a form
+    sendAjax(path, params, callback, form) {
+        const request = new XMLHttpRequest();
+        const url = path || document.location.href;
+        const $this = this;
+
+        request.open('POST', url, true);
+        request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        request.responseType = 'json';
+
+        if (form.querySelector('input[type="file"]') && this.config.showUplodedProgress) {
+            request.upload.onprogress = function (e) {
+                $this.onUploadProgress(e, form)
+            };
+            request.upload.onload = function (e) {
+                $this.onUploadFinished(e, form)
+            };
+            request.upload.onerror = function (e) {
+                $this.onUploadError(e, form)
+            };
         }
-    },
-    close: function () {
-        $.jGrowl('close');
-    },
-};
+
+        request.addEventListener('readystatechange', function () {
+            form.querySelectorAll('input,textarea,select,button').forEach(el => el.disabled = true);
+            if (request.readyState === 4 && request.status === 200) {
+                callback(request.response, request.response.success, request, form);
+            } else if(request.readyState === 4 && request.status !== 200) {
+                if (AjaxForm.Message !== undefined) {
+                    AjaxForm.Message.error($this.config.ajaxErrorMsg);
+                }
+            }
+        });
+        request.send(params);
+    }
+
+    // handler server response
+    responseHandler(response, status, xhr, form) {
+        const event = new CustomEvent('af_complete', {
+            cancelable: true,
+            bubbles: true,
+            detail: {response: response, status: status, xhr: xhr, form: form},
+        });
+        const cancelled = document.dispatchEvent(event);
+
+        form.querySelectorAll('input,textarea,select,button').forEach(el => el.disabled = false);
+
+        if (cancelled) {
+            if (!status) {
+                this.onError(response, status, xhr, form);
+            } else {
+                this.onSuccess(response, status, xhr, form);
+            }
+        }else{
+            return false;
+        }
+    }
+
+    // handler server success response
+    onSuccess(response, status, xhr, form) {
+        if (AjaxForm.Message !== undefined) {
+            AjaxForm.Message.success(response.message);
+        }
+
+        form.querySelectorAll('.error').forEach(el => {
+            if (el.name) {
+                el.removeEventListener('keydown', this.resetErrors);
+            }
+        });
+        if (this.config.clearFieldsOnSuccess) {
+            form.reset();
+        }
+        //noinspection JSUnresolvedVariable
+        if (typeof (grecaptcha) != undefined) {
+            //noinspection JSUnresolvedVariable
+            grecaptcha.reset();
+        }
+    }
+
+    // handler server error response
+    onError(response, status, xhr, form) {
+        if (AjaxForm.Message !== undefined) {
+            AjaxForm.Message.error(response.message);
+        }
+
+        if (response.data) {
+            let key, value, focused;
+            for (key in response.data) {
+                let span = form.querySelector('.error_' + key);
+                if (response.data.hasOwnProperty(key)) {
+                    if (!focused) {
+                        form.querySelector('[name="' + key + '"]').focus();
+                        focused = true;
+                    }
+                    value = response.data[key];
+                    if (span) {
+                        span.innerHTML = value;
+                        span.classList.add('error');
+                    }
+
+                    form.querySelector('[name="' + key + '"]').classList.add('error');
+                }
+            }
+
+            form.querySelectorAll('.error').forEach(el => {
+                if (el.name) {
+                    el.addEventListener('keydown', this.resetErrors);
+                }
+            });
+        }
+    }
+
+    // File upload processing methods
+    onUploadProgress(e, form) {
+        if (AjaxForm.Message !== undefined) {
+            AjaxForm.Message.info(this.config.fileUplodedProgressMsg + Math.ceil(e.loaded / e.total * 100) + '%');
+        }
+    }
+
+    onUploadFinished(e, form) {
+        if (AjaxForm.Message !== undefined) {
+            AjaxForm.Message.success(this.config.fileUplodedSuccessMsg);
+        }
+    }
+
+    onUploadError(e, form) {
+        if (AjaxForm.Message !== undefined) {
+            AjaxForm.Message.error(this.config.fileUplodedErrorMsg);
+        }
+    }
+}
