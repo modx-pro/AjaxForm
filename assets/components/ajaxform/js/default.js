@@ -36,7 +36,7 @@ class AjaxForm {
         e.preventDefault();
         if (this.beforeSubmit(e.target)) {
             this.beforeSerialize(e.target, e.submitter);
-            let params = new FormData(e.target);
+            const params = new FormData(e.target);
             params.append('pageId', this.pageId);
             this.sendAjax(this.config.actionUrl, params, this.responseHandler.bind(this), e.target);
         }
@@ -46,7 +46,7 @@ class AjaxForm {
         if (AjaxForm.Message !== undefined) {
             AjaxForm.Message.close();
         }
-        let currentErrors = e.target.querySelectorAll('.error');
+        const currentErrors = e.target.querySelectorAll('.error');
         if (currentErrors.length) {
             currentErrors.forEach(this.resetErrors);
         }
@@ -64,13 +64,15 @@ class AjaxForm {
     // function rewritten in pure js from the original file
     // i don't know what this function is for
     beforeSerialize(form, submitter) {
-        let submitVarInput = form.querySelector('input[type="hidden"][name="' + submitter.name + '"]');
-        if (!submitVarInput) {
-            submitVarInput = document.createElement('input');
-            submitVarInput.setAttribute('type', 'hidden');
-            submitVarInput.setAttribute('name', submitter.name);
-            submitVarInput.setAttribute('value', submitter.value);
-            form.appendChild(submitVarInput);
+        if(submitter !== undefined && submitter.name){
+            let submitVarInput = form.querySelector('input[type="hidden"][name="' + submitter.name + '"]');
+            if (!submitVarInput) {
+                submitVarInput = document.createElement('input');
+                submitVarInput.setAttribute('type', 'hidden');
+                submitVarInput.setAttribute('name', submitter.name);
+                submitVarInput.setAttribute('value', submitter.value);
+                form.appendChild(submitVarInput);
+            }
         }
     }
 
@@ -152,7 +154,7 @@ class AjaxForm {
             form.reset();
         }
         //noinspection JSUnresolvedVariable
-        if (typeof (grecaptcha) != undefined) {
+        if (grecaptcha !== undefined) {
             //noinspection JSUnresolvedVariable
             grecaptcha.reset();
         }
