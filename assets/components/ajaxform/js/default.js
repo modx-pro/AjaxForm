@@ -37,7 +37,7 @@ class AjaxForm {
         if (this.beforeSubmit(e.target)) {
             this.beforeSerialize(e.target, e.submitter);
             const params = new FormData(e.target);
-            params.append('pageId', this.pageId);
+            params.append('pageId', this.config.pageId);
             this.sendAjax(this.config.actionUrl, params, this.responseHandler.bind(this), e.target);
         }
     }
