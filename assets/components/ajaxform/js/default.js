@@ -154,7 +154,7 @@ class AjaxForm {
             form.reset();
         }
         //noinspection JSUnresolvedVariable
-        if (grecaptcha !== undefined) {
+        if (typeof grecaptcha !== 'undefined') {
             //noinspection JSUnresolvedVariable
             grecaptcha.reset();
         }
