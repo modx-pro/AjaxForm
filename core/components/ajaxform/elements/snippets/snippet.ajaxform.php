@@ -11,7 +11,8 @@ $snippet = $modx->getOption('snippet', $config, 'FormIt', true);
 $tpl = $modx->getOption('form', $config, 'tpl.AjaxForm.example', true);
 $formSelector = $modx->getOption('formSelector', $config, 'ajax_form', true);
 $objectName = $modx->getOption('objectName', $config, 'AjaxForm', true);
-$AjaxForm->loadJsCss($objectName);
+$assetsUrl = $modx->getOption('ajaxform_assets_url', $config,
+    $modx->getOption('assets_url') . 'components/ajaxform/');
 
 /** @var pdoTools $pdo */
 if (class_exists('pdoTools') && $pdo = $modx->getService('pdoTools')) {
@@ -54,11 +55,17 @@ if (preg_match('#<form.*?method=(?:"|\')(.*?)(?:"|\')#i', $content)) {
 // Add action for form processing
 $hash = md5(http_build_query($config));
 $action = '<input type="hidden" name="af_action" value="' . $hash . '" />';
+$parsedConfig = str_replace('[[+assetsUrl]]',$assetsUrl, $config);
+$inputConfig = '<input type="hidden" name="af_config" value=\'' . str_replace('{', '{ ',json_encode($parsedConfig)) . '\' />';
 if ((stripos($content, '</form>') !== false)) {
     if (preg_match('#<input.*?name=(?:"|\')af_action(?:"|\').*?>#i', $content, $matches)) {
         $content = str_ireplace($matches[0], '', $content);
     }
+    if (preg_match('#<input.*?name=(?:"|\')af_config(?:"|\').*?>#i', $content, $matches)) {
+        $content = str_ireplace($matches[0], '', $content);
+    }
     $content = str_ireplace('</form>', "\n\t$action\n</form>", $content);
+    $content = str_ireplace('</form>', "\n\t$inputConfig\n</form>", $content);
 }
 
 // Save settings to user`s session
@@ -69,6 +76,7 @@ $action = !empty($_REQUEST['af_action'])
     ? $_REQUEST['af_action']
     : $hash;
 
+$AjaxForm->loadJsCss($objectName);
 $AjaxForm->process($action, $_REQUEST);
 
 // Return chunk

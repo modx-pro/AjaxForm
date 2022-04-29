@@ -78,32 +78,12 @@ class AjaxForm
         }
         if ($js = trim($this->config['frontend_js'])) {
             if (preg_match('/\.js/i', $js)) {
-                $this->modx->regClientScript(str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $js));
+                $scriptPath = str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $js);
+                $this->modx->regClientScript(
+                    '<script type="module" src="'.$scriptPath.'"></script>', true
+                );
             }
         }
-
-        $config = $this->modx->toJSON(array(
-            'assetsUrl' => $this->config['assetsUrl'],
-            'actionUrl' => str_replace('[[+assetsUrl]]', $this->config['assetsUrl'], $this->config['actionUrl']),
-            'closeMessage' => $this->config['closeMessage'],
-            'clearFieldsOnSuccess' => $this->config['clearFieldsOnSuccess'],
-
-            'fileUplodedProgressMsg' => $this->config['fileUplodedProgressMsg'],
-            'fileUplodedSuccessMsg' => $this->config['fileUplodedSuccessMsg'],
-            'fileUplodedErrorMsg' => $this->config['fileUplodedErrorMsg'],
-            'showUplodedProgress' => $this->config['showUplodedProgress'],
-            'ajaxErrorMsg' => $this->config['ajaxErrorMsg'],
-
-            'formSelector' => "form.{$this->config['formSelector']}",
-            'pageId' => !empty($this->modx->resource)
-                ? $this->modx->resource->get('id')
-                : 0,
-        ));
-
-        $objectName = trim($objectName);
-        $this->modx->regClientScript(
-            "<script type=\"text/javascript\">new {$objectName}(\".{$this->config['formSelector']}\",{$config});</script>", true
-        );
     }
 
 
