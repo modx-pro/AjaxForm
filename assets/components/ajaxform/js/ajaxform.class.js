@@ -20,6 +20,11 @@ export default class AjaxForm {
 
         this.config = Object.assign({}, this.defaults, config);
 
+        this.notify = window[this.config.message_handler];
+        if(this.config.message_handler_method){
+            this.notify = window[this.config.message_handler][this.config.message_handler_method];
+        }
+
         // adding the necessary handlers
         this.addHandlers(['submit', 'reset'], 'Form');
     }
@@ -42,8 +47,8 @@ export default class AjaxForm {
     }
 
     onresetForm(e) {
-        if (SweetAlert2.Message !== undefined) {
-            SweetAlert2.Message.close();
+        if (this.notify !== undefined) {
+            this.notify.close();
         }
         const currentErrors = e.target.querySelectorAll('.error');
         if (currentErrors.length) {
@@ -108,8 +113,8 @@ export default class AjaxForm {
             if (request.readyState === 4 && request.status === 200) {
                 callback(request.response, request.response.success, request, form);
             } else if(request.readyState === 4 && request.status !== 200) {
-                if (SweetAlert2.Message !== undefined) {
-                    SweetAlert2.Message.error($this.config.ajaxErrorMsg);
+                if (this.notify !== undefined) {
+                    this.notify.error($this.config.ajaxErrorMsg);
                 }
             }
         });
@@ -140,8 +145,8 @@ export default class AjaxForm {
 
     // handler server success response
     onSuccess(response, status, xhr, form) {
-        if (SweetAlert2.Message !== undefined) {
-            SweetAlert2.Message.success(response.message);
+        if (this.notify !== undefined) {
+            this.notify.success(response.message);
         }
 
         form.querySelectorAll('.error').forEach(el => {
@@ -161,8 +166,8 @@ export default class AjaxForm {
 
     // handler server error response
     onError(response, status, xhr, form) {
-        if (SweetAlert2.Message !== undefined) {
-            SweetAlert2.Message.error(response.message);
+        if (this.notify !== undefined) {
+            this.notify.error(response.message);
         }
 
         if (response.data) {
@@ -194,20 +199,20 @@ export default class AjaxForm {
 
     // File upload processing methods
     onUploadProgress(e, form) {
-        if (SweetAlert2.Message !== undefined) {
-            SweetAlert2.Message.info(this.config.fileUplodedProgressMsg + Math.ceil(e.loaded / e.total * 100) + '%');
+        if (this.notify !== undefined) {
+            this.notify.info(this.config.fileUplodedProgressMsg + Math.ceil(e.loaded / e.total * 100) + '%');
         }
     }
 
     onUploadFinished(e, form) {
-        if (SweetAlert2.Message !== undefined) {
-            SweetAlert2.Message.success(this.config.fileUplodedSuccessMsg);
+        if (this.notify !== undefined) {
+            this.notify.success(this.config.fileUplodedSuccessMsg);
         }
     }
 
     onUploadError(e, form) {
-        if (SweetAlert2.Message !== undefined) {
-            SweetAlert2.Message.error(this.config.fileUplodedErrorMsg);
+        if (this.notify !== undefined) {
+            this.notify.error(this.config.fileUplodedErrorMsg);
         }
     }
 }
