@@ -18,3 +18,8 @@ $_lang['af_err_snippet_ns'] = 'Snippet for processing of form not set.';
 $_lang['af_err_snippet_nf'] = 'Could not load specified snippet "[[+name]]" for processing of form.';
 $_lang['af_err_has_errors'] = 'The form contains errors';
 $_lang['af_success_submit'] = 'The form is successfully sent.';
+
+$_lang['af_message_uploded_progress'] = 'Uploaded: ';
+$_lang['af_message_uploded_success'] = 'The data is fully uploaded to the server!';
+$_lang['af_message_uploded_error'] = 'An error occurred while uploading data to the server!';
+$_lang['af_message_ajax_error'] = 'Form was not sent! Contact the administrator.';
